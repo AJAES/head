@@ -1,3 +1,23 @@
 <resources>
-    <string name="app_name">MissAndMatch</string>
+    <string name="app_name">"Miss! Match!"</string>
+
+    <string name="wake_Up">"Brain Pop"</string>
+    <string name="action_settings">Settings</string>
+    <string name="creater_name">"Created by MSE.DKU\n\n\nKim Hyo-Sang\nhskim7341@gmail.com\n\nLee Yun-Jae\nluj0691@naver.com\n\nLee Chang-Gil\nleechanggil@hanmail.net"</string>
+
+    <string name="Time_start">"Start"</string>
+    <string name="Time_stop">"Stop"</string>
+    <string name="Time_init">"INIT"</string>
+
+    <string name="title_creater">creater</string>
+
+    <string name="title_activity_singleplay">Singleplay</string>
+    <string name="title_activity_ghmain">Singleplay</string>
+
+    <string name="title_activity_htp">HTP</string>
+    <string name="title_activity_option">Option</string>
+
+    <string name="title_activity_multiplay">Multiplay</string>
+    <string name="title_activity_multiplay_room">Multiplay</string>
+
 </resources>

@@ -1,17 +1,64 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.new_commer.missandmatch.MainActivity">
+    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity"
+     android:id="@+id/act_main">
 
-    <TextView
+
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:gravity="center_horizontal"
+        android:id="@+id/title" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/b_single"
+        android:layout_above="@+id/b_multi"
+        android:gravity="center_horizontal"
+        android:layout_centerHorizontal="true" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/b_multi"
+        android:layout_above="@+id/b_htp"
+        android:layout_alignLeft="@+id/b_single"
+        android:gravity="center_horizontal"
+        android:layout_alignStart="@+id/b_single" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:id="@+id/b_made"
+        android:layout_alignParentBottom="true"
+        android:layout_alignLeft="@+id/b_option"
+        android:layout_alignStart="@+id/b_option" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/b_option"
+        android:gravity="center_horizontal"
+        android:layout_above="@+id/b_made"
+        android:layout_alignLeft="@+id/b_htp"
+        android:layout_alignStart="@+id/b_htp" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/b_htp"
+        android:gravity="center_horizontal"
+        android:layout_above="@+id/b_option"
+        android:layout_alignLeft="@+id/b_multi"
+        android:layout_alignStart="@+id/b_multi" />
+
 </RelativeLayout>
