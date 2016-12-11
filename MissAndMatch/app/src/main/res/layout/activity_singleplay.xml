@@ -134,5 +134,11 @@
         android:layout_marginRight="11dp"
         android:layout_marginEnd="11dp" />
 
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/b_miss_single"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/b_hint" />
 
 </RelativeLayout>

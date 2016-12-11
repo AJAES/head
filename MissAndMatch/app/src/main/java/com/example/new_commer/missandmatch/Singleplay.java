@@ -34,10 +34,14 @@ public class Singleplay extends AppCompatActivity implements View.OnClickListene
     int record_sig=0;
     int matchflag = 0;
     int ver=1;
-    
+    int vibe=0;
+    int hintcount=1;
+    Vibrator vibrator;
+
     ImageButton back_button;
     ImageButton miss_button;
     ImageButton match_button;
+    ImageButton hint_button;
     TextView t_view;
 
     stage i_stage = new stage();
@@ -50,8 +54,14 @@ public class Singleplay extends AppCompatActivity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_singleplay);
 
+        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
         RelativeLayout main = (RelativeLayout) findViewById(R.id.act_singleplay);
         Resources res = getResources(); //resource handle
+
+        Intent intent = new Intent(Singleplay.this.getIntent());
+        ver = intent.getIntExtra("VER", 0);
+        vibe = intent.getIntExtra("VIBE", 0);
 
         for(int temp = 0; temp<9; temp++){
             button_block[temp] = new stage_block();
@@ -78,19 +88,24 @@ public class Singleplay extends AppCompatActivity implements View.OnClickListene
         miss_button = (ImageButton)findViewById(R.id.b_miss_single);
         miss_button.setBackgroundColor(00000000);
         miss_button.setOnClickListener(this);
+        miss_button.setEnabled(false);
 
         match_button = (ImageButton)findViewById(R.id.b_match_single);
         match_button.setBackgroundColor(00000000);
         match_button.setOnClickListener(this);
+        match_button.setEnabled(true);
 
-        Intent intent = new Intent(Singleplay.this.getIntent());
-        ver = intent.getIntExtra("VER", 0);
+        hint_button = (ImageButton)findViewById(R.id.b_hint);
+        hint_button.setBackgroundColor(00000000);
+        hint_button.setEnabled(true);
+        hint_button.setOnClickListener(this);
 
         switch (ver) {
             case 1: {
                 back_button.setImageResource(R.drawable.b1_back);
                 miss_button.setImageResource(R.drawable.b1_miss);
                 match_button.setImageResource(R.drawable.b1_match);
+                hint_button.setImageResource(R.drawable.b1_hint);
                 Drawable drawable = res.getDrawable(R.drawable.b1_singleplay_back); //new Image that was added to the res folder
                 main.setBackground(drawable);
                 break;
@@ -100,6 +115,7 @@ public class Singleplay extends AppCompatActivity implements View.OnClickListene
                 back_button.setImageResource(R.drawable.b2_back);
                 miss_button.setImageResource(R.drawable.b2_miss);
                 match_button.setImageResource(R.drawable.b2_match);
+                hint_button.setImageResource(R.drawable.b2_hint);
                 Drawable drawable = res.getDrawable(R.drawable.b2_singleplay_back); //new Image that was added to the res folder
                 main.setBackground(drawable);
                 break;
@@ -110,6 +126,7 @@ public class Singleplay extends AppCompatActivity implements View.OnClickListene
         back_button.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
+                vibrator.vibrate(vibe*100);
                 total_time+= (save_value-value);
                 record_sig=1;
                 Intent intent = new Intent(Singleplay.this,record.class);
@@ -117,7 +134,8 @@ public class Singleplay extends AppCompatActivity implements View.OnClickListene
                 intent.putExtra("ROUND",round);
                 intent.putExtra("SCORE",score);
                 intent.putExtra("RECORD_SIG",record_sig);
-                intent .putExtra("VER",ver);;
+                intent.putExtra("VER",ver);
+                intent.putExtra("VIBE",vibe);
                 startActivity(intent);
                 finish();
                 record_sig=0;
@@ -126,18 +144,28 @@ public class Singleplay extends AppCompatActivity implements View.OnClickListene
         Collections.shuffle(i_stage.ranNumber);
 
         for(int i =0; i<9; i++){
+            //button_block[i].b_button.setEnabled(true);
             button_block[i].b_button.setTag(i);
             button_block[i].b_button.setOnClickListener(this);
             temp_index = i_stage.ranNumber.get(i);
-            button_block[i].b_button.setImageResource(i_stage.block_array[temp_index].image);
             button_block[i].b_button.setBackgroundColor(00000000);
-            button_block[i].b_backcolor = i_stage.block_array[temp_index].back_color;
-            button_block[i].b_shapecolor = i_stage.block_array[temp_index].shape_color;
-            button_block[i].b_shape = i_stage.block_array[temp_index].shape;
+            switch(ver){
+                case 2:
+                    button_block[i].b_button.setImageResource(i_stage.block_array2[temp_index].image);
+                    button_block[i].b_backcolor = i_stage.block_array2[temp_index].back_color;
+                    button_block[i].b_shapecolor = i_stage.block_array2[temp_index].shape_color;
+                    button_block[i].b_shape = i_stage.block_array2[temp_index].shape;
+                    break;
+                case 1:
+                    button_block[i].b_button.setImageResource(i_stage.block_array[temp_index].image);
+                    button_block[i].b_backcolor = i_stage.block_array[temp_index].back_color;
+                    button_block[i].b_shapecolor = i_stage.block_array[temp_index].shape_color;
+                    button_block[i].b_shape = i_stage.block_array[temp_index].shape;
+                default:
+            }
             button_block[i].b_position = 0;
         }
         mHandler.sendEmptyMessage(0);
-
         s_view.setText(String.format("Score : %d점", score));
         finishcount = i_stage.check_finishcount(button_block);
         finish_check_count = finishcount;
@@ -160,6 +188,8 @@ public class Singleplay extends AppCompatActivity implements View.OnClickListene
                 intent.putExtra("ROUND",round);
                 intent.putExtra("SCORE",score);
                 intent.putExtra("RECORD_SIG",record_sig);
+                intent .putExtra("VER",ver);
+                intent.putExtra("VIBE",vibe);
                 Singleplay.this.startActivity(intent);
                 finish();
                 record_sig=0;
@@ -169,11 +199,25 @@ public class Singleplay extends AppCompatActivity implements View.OnClickListene
 
     public void onClick(View v) {
         ImageButton newButton = (ImageButton) v;
-        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE); //진동을위해
+        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE); //진동을위해
+        vibrator.vibrate(vibe*100);
 
         ImageButton tempButton;
+
+        if(newButton == hint_button)
+        {
+            if(hintcount!=0) {
+                Toast.makeText(this, "remain number of \"MATCH\" " + finishcount, Toast.LENGTH_SHORT).show();
+                hintcount=0;
+            }
+            else
+            {
+                Toast.makeText(this, "you already show hint", Toast.LENGTH_SHORT).show();
+            }
+        }
         if(newButton == match_button){
-            match_button.setBackgroundColor(Color.BLUE);
+            int color = getResources().getColor(R.color.match_color);
+            match_button.setBackgroundColor(color);
             for(int i =0; i<9; i++) {
                 button_block[i].b_button.setEnabled(true);
             }
@@ -191,13 +235,14 @@ public class Singleplay extends AppCompatActivity implements View.OnClickListene
                         if (button_block[position].b_position == 0) {
                             click_count++;
                             button_block[position].b_position = 1;
-                            button_block[position].b_button.setBackgroundColor(Color.LTGRAY);
+                            button_block[position].b_button.setBackgroundColor(Color.RED);
                         } else if (button_block[position].b_position == 1) {
                             button_block[position].b_position = 0;
                             click_count--;
                             button_block[position].b_button.setBackgroundColor(00000000);
                         }
                     }
+
                     if (click_count == 3) {
                         this.i_stage.uppersort(index_array);
                         if(i_stage.match(button_block[index_array[0]-1], button_block[index_array[1]-1], button_block[index_array[2]-1]) == 1){
@@ -231,7 +276,7 @@ public class Singleplay extends AppCompatActivity implements View.OnClickListene
                             s_view.setText(String.format("Score : %d",score));
                         }
                         for(int t=0; t<3; t++){
-                            button_block[index_array[t]-1].b_button.setBackgroundColor(00000000);
+                            button_block[index_array[t]-1].b_button.setBackgroundColor(000000);
                             button_block[index_array[t]-1].b_position = 0;
                             index_array[t] = 0;
                         }
@@ -243,40 +288,53 @@ public class Singleplay extends AppCompatActivity implements View.OnClickListene
                 }
             }
         }
-        if(newButton == miss_button){
-            matchflag = 0;
-            click_count = 0;
-            if (finishcount == 0) {
-                Toast.makeText(this, "Miss. +3 points", Toast.LENGTH_SHORT).show();
-                score = score + 3;
-                Collections.shuffle(i_stage.ranNumber);
+        else if(matchflag == 0){
+            if(newButton == miss_button){
+                matchflag = 0;
+                click_count = 0;
+                if (finishcount == 0) {
+                    Toast.makeText(this, "Miss. +3 points", Toast.LENGTH_SHORT).show();
+                    score = score + 3;
+                    Collections.shuffle(i_stage.ranNumber);
 
-                for(int i =0; i<9; i++){
-                    button_block[i].b_button.setEnabled(false);
-                    button_block[i].b_button.setTag(i);
-                    button_block[i].b_button.setOnClickListener(this);
-                    temp_index = i_stage.ranNumber.get(i);
-                    button_block[i].b_button.setImageResource(i_stage.block_array[temp_index].image);
-                    button_block[i].b_button.setBackgroundColor(00000000);
-                    button_block[i].b_backcolor = i_stage.block_array[temp_index].back_color;
-                    button_block[i].b_shapecolor = i_stage.block_array[temp_index].shape_color;
-                    button_block[i].b_shape = i_stage.block_array[temp_index].shape;
-                    button_block[i].b_position = 0;
+                    for(int i =0; i<9; i++){
+                        button_block[i].b_button.setEnabled(false);
+                        button_block[i].b_button.setTag(i);
+                        button_block[i].b_button.setOnClickListener(this);
+                        temp_index = i_stage.ranNumber.get(i);
+                        button_block[i].b_button.setBackgroundColor(00000000);
+                        switch(ver){
+                            case 2:
+                                button_block[i].b_button.setImageResource(i_stage.block_array2[temp_index].image);
+                                button_block[i].b_backcolor = i_stage.block_array2[temp_index].back_color;
+                                button_block[i].b_shapecolor = i_stage.block_array2[temp_index].shape_color;
+                                button_block[i].b_shape = i_stage.block_array2[temp_index].shape;
+                                break;
+                            case 1:
+                                button_block[i].b_button.setImageResource(i_stage.block_array[temp_index].image);
+                                button_block[i].b_backcolor = i_stage.block_array[temp_index].back_color;
+                                button_block[i].b_shapecolor = i_stage.block_array[temp_index].shape_color;
+                                button_block[i].b_shape = i_stage.block_array[temp_index].shape;
+                            default:
+                        }
+                        button_block[i].b_position = 0;
+                    }
+                    s_view.setText(String.format("Score : %d", score));
+                    finishcount = i_stage.check_finishcount(button_block);
+                    finish_check_count = finishcount;
+                    hintcount = 1;
+                } else {
+                    Toast.makeText(this, "not miss yet -1 point", Toast.LENGTH_SHORT).show();
+                    for(int i =0; i<9; i++){
+                        button_block[i].b_button.setEnabled(false);
+                        button_block[i].b_button.setTag(i);
+                        button_block[i].b_button.setOnClickListener(this);
+                        button_block[i].b_button.setBackgroundColor(000000);
+                        button_block[i].b_position = 0;
+                    }
+                    score--;
+                    s_view.setText(String.format("Score : %d", score));
                 }
-                s_view.setText(String.format("Score : %d", score));
-                finishcount = i_stage.check_finishcount(button_block);
-                finish_check_count = finishcount;
-            } else {
-                Toast.makeText(this, "not miss yet -1 point", Toast.LENGTH_SHORT).show();
-                for(int i =0; i<9; i++){
-                    button_block[i].b_button.setEnabled(false);
-                    button_block[i].b_button.setTag(i);
-                    button_block[i].b_button.setOnClickListener(this);
-                    button_block[i].b_button.setBackgroundColor(00000000);
-                    button_block[i].b_position = 0;
-                }
-                score--;
-                s_view.setText(String.format("Score : %d", score));
             }
         }
     }

@@ -7,8 +7,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.widget.TextView;
-
 
 public class DataBase extends SQLiteOpenHelper {
 
@@ -54,37 +52,96 @@ public class DataBase extends SQLiteOpenHelper {
         db.close();
     }*/
 
+    /*
+      public int[][]  getResult() {
+          int a=0;
+          int b=1;
+
+          int[][] out = new int[10][4];
+        // 읽기가 가능하게 DB 열기
+        SQLiteDatabase db = getReadableDatabase();
+       // String result = "No   Score   round    time" +"\n" ;
+
+        // DB에 있는 데이터를 쉽게 처리하기 위해 Cursor를 사용하여 테이블에 있는 모든 데이터 출력
+        Cursor cursor = db.rawQuery("SELECT * FROM db_record order by score desc", null);
+
+        while (cursor.moveToNext())
+        {
+            if(a==10)
+                break;
+            else
+            {
+                while(b<4)
+                {
+                    out[a][b] = cursor.getInt(b);
+                }
+                b=1;
+            }
+        }
+
+        return out;
+    }*/
     public String getResult() {
 
         int a=1;
         // 읽기가 가능하게 DB 열기
         SQLiteDatabase db = getReadableDatabase();
-        String result = "No   Score   round    time" +"\n" ;
+        String result = "No  Score  round   time" +"\n" ;
 
         // DB에 있는 데이터를 쉽게 처리하기 위해 Cursor를 사용하여 테이블에 있는 모든 데이터 출력
-        Cursor cursor = db.rawQuery("SELECT * FROM db_record order by score desc", null);
+        Cursor cursor = db.rawQuery("SELECT * FROM db_record order by score desc ,round asc,time asc", null);
         while (cursor.moveToNext())
         {
+            //round
             if(a==11)
                 break;
-            else if(a==10)
+            else if(a==10) {
+                result += String.format("% 3d", a++);
+            }
+            else {
+                result += String.format("% 4d", a++);
+            }
+
+            //score
+            if(cursor.getInt(1)/100 != 0)
             {
-                result += String.format("%3d",a++)
-                        + String.format("%12d",cursor.getInt(1))
-                        + String.format("%12d",cursor.getInt(2))
-                        + String.format("%12d",cursor.getInt(3))
-                        + "\n";
+                result +=  String.format("% 9d",cursor.getInt(1));
+            }
+            else if(cursor.getInt(1)/10 != 0)
+            {
+                result +=  String.format("% 10d",cursor.getInt(1));
             }
             else
             {
-                result += String.format("%4d", a++)
-                        + String.format("%12d", cursor.getInt(1))
-                        + String.format("%12d", cursor.getInt(2))
-                        + String.format("%12d", cursor.getInt(3))
-                        + "\n";
+                result +=  String.format("% 11d",cursor.getInt(1));
+            }
+            //round
+            if(cursor.getInt(2)/100 != 0)
+            {
+                result +=  String.format("% 9d",cursor.getInt(2));
+            }
+            else if(cursor.getInt(2)/10 != 0)
+            {
+                result +=  String.format("% 10d",cursor.getInt(2));
+            }
+            else
+            {
+                result +=  String.format("% 11d",cursor.getInt(2));
+            }
+            //time
+            if(cursor.getInt(3)/100 != 0)
+            {
+                result +=  String.format("% 7d",cursor.getInt(3))+ "\n";
+            }
+            else if(cursor.getInt(3)/10 != 0)
+            {
+                result +=  String.format("% 8d",cursor.getInt(3))+ "\n";
+            }
+            else
+            {
+                result +=  String.format("% 9d",cursor.getInt(3))+ "\n";
             }
         }
-
         return result;
     }
 }

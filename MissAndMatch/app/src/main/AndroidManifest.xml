@@ -3,6 +3,8 @@
     package="com.example.new_commer.missandmatch">
 
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
     <!-- 창길추가 : 진동을위한 -->
     <application
@@ -23,14 +25,12 @@
             android:name=".Ghmain"
             android:label="@string/title_activity_ghmain" />
         <activity
-            android:name=".multiplay"
+            android:name=".Multi_room"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
             android:label="@string/title_activity_multiplay" />
         <activity
             android:name=".creater"
             android:label="@string/title_creater" />
-        <activity
-            android:name=".multiplay_room"
-            android:label="@string/title_activity_multiplay" />
         <activity
             android:name=".Singleplay"
             android:label="@string/title_activity_singleplay" />
@@ -43,10 +43,13 @@
         <activity
             android:name=".howto"
             android:label="@string/title_activity_htp" />
-        <activity android:name=".Multi_room" />
-        <activity android:name=".Multiplay" />
-        <activity android:name=".Room_List" />
-        <activity android:name=".Join_room"></activity>
+
+        <activity
+            android:name=".DeviceListActivity"
+            android:label="@string/title_device_list"
+            android:theme="@android:style/Theme.Dialog"
+            android:configChanges="orientation|keyboardHidden" />
+
     </application>
 
 </manifest>

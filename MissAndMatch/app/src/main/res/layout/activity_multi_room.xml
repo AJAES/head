@@ -88,7 +88,7 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/block2"
         android:id="@+id/block3"
-        android:layout_below="@+id/m_score_view"
+        android:layout_below="@+id/m_score1_view"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
@@ -100,23 +100,34 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
-    <TextView
-        android:text="roomnum"
-        android:textSize="10pt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/m_roomnum"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/block2"
-        android:layout_below="@+id/m_score_view"
+        android:layout_below="@+id/m_score1_view"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp" />
+
+    <TextView
+        android:text="user2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/m_user2"
+        android:textSize="15dp"
+        android:layout_alignBottom="@+id/m_score1_view"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:text="user1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/m_user1"
+        android:textSize="15dp"
+        android:layout_alignBaseline="@+id/m_score1_view"
+        android:layout_alignBottom="@+id/m_score1_view"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:text="Time"
@@ -125,8 +136,20 @@
         android:layout_height="wrap_content"
         android:id="@+id/m_timer"
         android:layout_alignParentTop="true"
-        android:layout_alignLeft="@+id/m_score_view"
-        android:layout_alignStart="@+id/m_score_view" />
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="asdf"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="#f0e68c"
+        android:textSize="10pt"
+        android:id="@+id/m_score2_view"
+        android:layout_marginTop="51dp"
+        android:layout_below="@+id/m_timer"
+        android:layout_toRightOf="@+id/textView"
+        android:layout_toEndOf="@+id/textView" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -135,57 +158,65 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="#f0e68c"
         android:textSize="10pt"
-        android:id="@+id/m_score_view"
-        android:layout_marginTop="50dp"
-        android:layout_below="@+id/m_timer"
+        android:id="@+id/m_score1_view"
+        android:layout_alignTop="@+id/m_score2_view"
+        android:layout_toLeftOf="@+id/textView"
+        android:layout_toStartOf="@+id/textView" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView"
+        android:layout_above="@+id/block2"
         android:layout_centerHorizontal="true" />
 
-    <TextView
-        android:text="user1"
+    <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/m_user1"
-        android:textSize="15dp"
-        android:layout_below="@+id/m_score_view"
+        android:id="@+id/start"
+        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="12dp"
-        android:layout_marginStart="12dp" />
+        android:layout_alignParentStart="true" />
 
-    <TextView
-        android:text="user2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/m_user2"
-        android:textSize="15dp"
-        android:layout_below="@+id/m_score_view"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="11dp"
-        android:layout_marginEnd="11dp" />
 
-    <TextView
-        android:text="user2say"
-        android:textSize="13dp"
-        android:gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/balloon_r"
-        android:layout_alignTop="@+id/m_score_view"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:id="@+id/m_user2_word" />
+    <!--
+    <ListView
+        android:id="@+id/in"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:drawSelectorOnTop="true"
+        android:stackFromBottom="true"
+        android:transcriptMode="alwaysScroll"
+        android:layout_above="@+id/b_match_multi"
+        android:layout_below="@+id/block7" />
 
-    <TextView
-        android:text="user1say"
-        android:textSize="13dp"
-        android:gravity="center"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/balloon_l"
-        android:layout_alignTop="@+id/m_score_view"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/m_user1_word" />
+        android:layout_alignParentStart="true">
+
+        <requestFocus android:layout_weight="1" />
+
+        <EditText
+            android:id="@+id/edit_text_out"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="메시지를 입력하십시오." />
+
+        <ImageButton android:id="@+id/button_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/send"
+            />
+    </LinearLayout>
+    -->
+
+
 
 </RelativeLayout>

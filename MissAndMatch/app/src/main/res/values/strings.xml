@@ -20,4 +20,30 @@
     <string name="title_activity_multiplay">Multiplay</string>
     <string name="title_activity_multiplay_room">Multiplay</string>
 
+    <string name="title_device_list">DeviceList</string>
+
+
+
+    <!--  BluetoothChat -->
+    <string name="send">전송</string>
+    <string name="not_connected">No Connection</string>
+    <string name="bt_not_enabled_leaving">Please turn on Bluetooth.</string>
+    <string name="title_connecting">Connecting...</string>
+    <string name="title_connected_to">Connect to : </string>
+    <string name="title_not_connected">Please connect to device</string>
+
+    <!--  DeviceListActivity -->
+    <string name="scanning">Searching device....</string>
+    <string name="select_device">choose the device</string>
+    <string name="none_paired">You do not have paired device</string>
+    <string name="none_found">fail to search device\nPlease check device if it is turned on bluetooth.</string>
+    <string name="title_paired_devices">disconnected paired device</string>
+    <string name="title_other_devices">other device could be paired</string>
+    <string name="button_scan">search device\nboth phone must turn on this app.</string>
+
+    <!-- Options Menu -->
+    <string name="secure_connect">Secure Connection</string>
+    <string name="insecure_connect">General Connection(recommend)</string>
+    <string name="discoverable">allow others to search this device</string>
+
 </resources>
