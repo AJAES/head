@@ -26,6 +26,7 @@ public class record extends AppCompatActivity {
 
     ImageButton back_button;
     ImageView t_record;
+    ImageButton del_button;
     TextView t_result;
 
     DataBase db_open;
@@ -64,6 +65,9 @@ public class record extends AppCompatActivity {
         t_record = (ImageView) findViewById(R.id.t_record);
         t_record.setBackgroundColor(00000000);
 
+        del_button = (ImageButton) findViewById(R.id.b_del);
+        del_button.setBackgroundColor(00000000);
+
         Intent intent1 = new Intent(record.this.getIntent());
         ver = intent1.getIntExtra("VER", 0);
         vibe = intent1.getIntExtra("VIBE", 0);
@@ -71,6 +75,7 @@ public class record extends AppCompatActivity {
         switch (ver) {
             case 1: {
                 back_button.setImageResource(R.drawable.b1_back);
+                del_button.setImageResource(R.drawable.b1_delete);
                 t_record.setImageResource(R.drawable.t_record);
                 t_result.setTextColor(color1);
                 Drawable drawable = res.getDrawable(R.drawable.b1_singleplay_back); //new Image that was added to the res folder
@@ -80,6 +85,7 @@ public class record extends AppCompatActivity {
 
             case 2: {
                 back_button.setImageResource(R.drawable.b2_back);
+                del_button.setImageResource(R.drawable.b2_delete);
                 t_record.setImageResource(R.drawable.t_record);
                 t_result.setTextColor(color2);
                 Drawable drawable = res.getDrawable(R.drawable.b2_singleplay_back); //new Image that was added to the res folder
@@ -93,6 +99,15 @@ public class record extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 vibrator.vibrate(vibe*100);
+                finish();
+            }
+        });
+
+        del_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                vibrator.vibrate(vibe*100);
+                dbHelper.delete();
                 finish();
             }
         });

@@ -20,18 +20,17 @@
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/b_opt"
-        android:layout_above="@+id/b_back_option"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="203dp" />
+        app:srcCompat="@drawable/b1_option"
+        android:id="@+id/b_vive"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/b1_option"
-        android:layout_above="@+id/b_opt"
+        android:id="@+id/b_opt"
+        android:layout_below="@+id/b_vive"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="21dp"
-        android:id="@+id/b_vive" />
+        android:layout_marginTop="20dp" />
 
 </RelativeLayout>

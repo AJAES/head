@@ -37,50 +37,13 @@ public class DataBase extends SQLiteOpenHelper {
         db.close();
     }
 
-    /*
-    public void update(String item, int price) {
+    public void delete() {
         SQLiteDatabase db = getWritableDatabase();
-        // 입력한 항목과 일치하는 행의 가격 정보 수정
-        db.execSQL("UPDATE db_record SET price=" + price + " WHERE item='" + item + "';");
+        // 입력한 항목과 일치하는 행 삭제
+        db.execSQL("DELETE FROM db_record");
         db.close();
     }
 
-    public void delete(String item) {
-        SQLiteDatabase db = getWritableDatabase();
-        // 입력한 항목과 일치하는 행 삭제
-        db.execSQL("DELETE FROM db_record WHERE item='" + item + "';");
-        db.close();
-    }*/
-
-    /*
-      public int[][]  getResult() {
-          int a=0;
-          int b=1;
-
-          int[][] out = new int[10][4];
-        // 읽기가 가능하게 DB 열기
-        SQLiteDatabase db = getReadableDatabase();
-       // String result = "No   Score   round    time" +"\n" ;
-
-        // DB에 있는 데이터를 쉽게 처리하기 위해 Cursor를 사용하여 테이블에 있는 모든 데이터 출력
-        Cursor cursor = db.rawQuery("SELECT * FROM db_record order by score desc", null);
-
-        while (cursor.moveToNext())
-        {
-            if(a==10)
-                break;
-            else
-            {
-                while(b<4)
-                {
-                    out[a][b] = cursor.getInt(b);
-                }
-                b=1;
-            }
-        }
-
-        return out;
-    }*/
     public String getResult() {
 
         int a=1;

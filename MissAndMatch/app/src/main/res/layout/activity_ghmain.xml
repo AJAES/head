@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/b_record"
         android:gravity="center_horizontal"
-        android:layout_marginTop="11dp"
+        android:layout_marginTop="5dp"
         android:layout_below="@+id/b_start_single"
         android:layout_alignLeft="@+id/b_start_single"
         android:layout_alignStart="@+id/b_start_single" />

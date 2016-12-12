@@ -127,7 +127,7 @@ public class Singleplay extends AppCompatActivity implements View.OnClickListene
             @Override
             public void onClick(View v){
                 vibrator.vibrate(vibe*100);
-                total_time+= (save_value-value);
+                total_time = (save_value-value);
                 record_sig=1;
                 Intent intent = new Intent(Singleplay.this,record.class);
                 intent.putExtra("TIME",total_time);
@@ -137,8 +137,9 @@ public class Singleplay extends AppCompatActivity implements View.OnClickListene
                 intent.putExtra("VER",ver);
                 intent.putExtra("VIBE",vibe);
                 startActivity(intent);
-                finish();
                 record_sig=0;
+                value = -1;
+                finish();
             }
         });
         Collections.shuffle(i_stage.ranNumber);
@@ -193,6 +194,8 @@ public class Singleplay extends AppCompatActivity implements View.OnClickListene
                 Singleplay.this.startActivity(intent);
                 finish();
                 record_sig=0;
+            }else if(value < 0){
+
             }
         }
     };
@@ -319,6 +322,10 @@ public class Singleplay extends AppCompatActivity implements View.OnClickListene
                         }
                         button_block[i].b_position = 0;
                     }
+                    total_time+= (save_value-value);
+                    value = 300-(((round/10)*60)+((round%10)*20));
+                    save_value = value;
+                    t_view.setText(""+value);
                     s_view.setText(String.format("Score : %d", score));
                     finishcount = i_stage.check_finishcount(button_block);
                     finish_check_count = finishcount;

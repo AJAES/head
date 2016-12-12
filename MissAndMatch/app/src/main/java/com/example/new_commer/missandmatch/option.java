@@ -62,7 +62,7 @@ public class option extends AppCompatActivity {
             case 2: {
                 option.setImageResource(R.drawable.b2_change);
                 back.setImageResource(R.drawable.b2_back);
-                b_vibe.setImageResource(R.drawable.b1_vibe);
+                b_vibe.setImageResource(R.drawable.b2_vibe);
                 Drawable drawable = res.getDrawable(R.drawable.b2_main_back); //new Image that was added to the res folder
                 main.setBackground(drawable);
                 break;

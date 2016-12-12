@@ -15,7 +15,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
-import android.renderscript.Int2;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,13 +23,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,34 +36,34 @@ import java.util.Collections;
 
 public class Multi_room extends AppCompatActivity implements View.OnClickListener{
 
-    private int[] index_array = new int[3];
-    private int click_count=0;
-    private int score1 = 0;
+    private int[] index_array = new int[3];     //clicked buttons array
+    private int click_count=0;                   //count how many times clicked
+    private int score1 = 0;                       //user1's score
     private int score2 = 0;
     private int temp_index = 0;
-    private int finishcount = 0;
-    private int finish_check_count = 0;
-    private int start_flag = 0;
-    private int my_turn = 0;
+    private int finishcount = 0;                 //number of matches
+    private int finish_check_count = 0;         //number of remain matches
+    private int start_flag = 0;                   //if clicked start button
+    private int my_turn = 0;                      //my turn number
     private int opp_turn = 0;
-    private int position = 0;
-    private int matchflag = 0;
-    int value = 30;
-    int ver=1;
-    int vibe =0;
+    private int position = 0;                     //for checking button
+    private int matchflag = 0;                    //if clicked match button
+    int value = -1;                                 //time
+    int ver=1;                                       //option
+    int vibe =0;                                     //vibration
 
     ImageButton back_button;
     ImageButton miss_button;
     ImageButton match_button;
     ImageButton start_button;
-    TextView t_view;
+    TextView t_view;                                   //time view
     Vibrator vibrator;
     TextView user1_view;
     TextView user2_view;
-    TextView dummy_view;
+    TextView dummy_view;                              // " : "
+    TextView connect_view;
     TextView score1_view;
     TextView score2_view;
-    ComBuffer inbuffer;
 
     private stage i_stage = new stage();
     private stage_block[] button_block = new stage_block[9];
@@ -92,13 +87,6 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
     private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
     private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
     private static final int REQUEST_ENABLE_BT = 3;
-
-
-    /*
-    private ListView mConversationView;
-    private EditText mOutEditText;
-    private ImageButton mSendButton;
-    */
 
     // Name of the connected device
     private String mConnectedDeviceName = null;
@@ -161,7 +149,8 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
         score2_view.setText(String.format(" %d", score2));
         dummy_view = (TextView) findViewById(R.id.textView);
         dummy_view.setText("  :  ");
-
+        connect_view = (TextView) findViewById(R.id.con_state);
+        connect_view.setText(".....");
 
         t_view = (TextView) findViewById(R.id.m_timer);
 
@@ -182,10 +171,11 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
         start_button.setBackgroundColor(00000000);
         start_button.setOnClickListener(this);
         start_button.setEnabled(true);
-        start_button.setImageResource(R.drawable.b1_play);
+
 
         switch (ver) {
             case 1: {
+                start_button.setImageResource(R.drawable.b1_start);
                 back_button.setImageResource(R.drawable.b1_back);
                 miss_button.setImageResource(R.drawable.b1_miss);
                 match_button.setImageResource(R.drawable.b1_match);
@@ -195,10 +185,11 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
             }
 
             case 2: {
+                start_button.setImageResource(R.drawable.b2_start);
                 back_button.setImageResource(R.drawable.b2_back);
                 miss_button.setImageResource(R.drawable.b2_miss);
                 match_button.setImageResource(R.drawable.b2_match);
-                Drawable drawable = res.getDrawable(R.drawable.b2_multiplay_back); //new Image that was added to the res folder
+                Drawable drawable = res.getDrawable(R.drawable.b2_multi_back); //new Image that was added to the res folder
                 main.setBackground(drawable);
                 break;
             }
@@ -216,21 +207,23 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
         for (int i = 0; i < 9; i++) {
             button_block[i].b_button.setTag(i);
             button_block[i].b_button.setOnClickListener(this);
-            //temp_index = i_stage.ranNumber.get(i);
-            //button_block[i].b_button.setImageResource(i_stage.block_array[temp_index].image);
             button_block[i].b_button.setBackgroundColor(00000000);
-            //button_block[i].b_backcolor = i_stage.block_array[temp_index].back_color;
-            //button_block[i].b_shapecolor = i_stage.block_array[temp_index].shape_color;
-            //button_block[i].b_shape = i_stage.block_array[temp_index].shape;
             button_block[i].b_position = 0;
         }
-        cHandler.sendEmptyMessage(0);
     }
     private Handler cHandler = new Handler()    {
         public void handleMessage(Message msg){
-            value++;
-            t_view.setText(""+value);
-            cHandler.sendEmptyMessageDelayed(0,1000);
+            if(value > 0) {
+                value--;
+                t_view.setText("" + value);
+                cHandler.sendEmptyMessageDelayed(0, 1000);
+            }else if(value == 0){
+                sndtimesup();
+                value--;
+            }
+            else if(value < 0){
+
+            }
         }
     };
 
@@ -250,7 +243,6 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
             if (mChatService == null) setupChat();
         }
     }
-
     @Override
     public synchronized void onResume() {
         super.onResume();
@@ -267,26 +259,9 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
             }
         }
     }
-
-
     @TargetApi(3)
     private void setupChat() {
         Log.d(TAG, "setupChat()");
-
-        /*
-        mConversationArrayAdapter = new ArrayAdapter<String>(this, R.layout.message);
-        mConversationView = (ListView) findViewById(R.id.in);
-        mConversationView.setAdapter(mConversationArrayAdapter);
-
-        // Initialize the compose field with a listener for the return key
-        mOutEditText = (EditText) findViewById(R.id.edit_text_out);
-        mOutEditText.setOnEditorActionListener(mWriteListener);
-
-        // Initialize the send button with a listener that for click events
-        mSendButton = (ImageButton) findViewById(R.id.button_send);
-        mSendButton.setOnClickListener(this);
-        mSendButton.setImageResource(R.drawable.b1_play);
-        */
 
         // Initialize the BluetoothChatService to perform bluetooth connections
         mChatService = new BluetoothService(this, mHandler);
@@ -294,8 +269,6 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
         // Initialize the buffer for outgoing messages
         mOutStringBuffer = new StringBuffer("");
     }
-
-
     @Override
     public synchronized void onPause() {
         super.onPause();
@@ -313,7 +286,6 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
         if (mChatService != null) mChatService.stop();
         if(D) Log.e(TAG, "--- ON DESTROY ---");
     }
-
     @TargetApi(5)
     private void ensureDiscoverable() {
         if(D) Log.d(TAG, "ensure discoverable");
@@ -362,75 +334,6 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
             //mOutEditText.setText(mOutStringBuffer);
         }
     }
-    private void sendMessage(byte[] send) {
-        // Check that we're actually connected before trying anything
-        if (mChatService.getState() != BluetoothService.STATE_CONNECTED) {
-            Toast.makeText(this, R.string.not_connected, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Check that there's actually something to send
-        if (send.length > 0) {
-            // Get the message bytes and tell the BluetoothChatService to write
-            mChatService.write(send);
-
-            // Reset out string buffer to zero and clear the edit text field
-            mOutStringBuffer.setLength(0);
-        }
-    }
-
-
-    /*
-    // The Handler that gets information back from the BluetoothChatService
-    private final Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case MESSAGE_STATE_CHANGE:
-                    if(D) Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
-                    switch (msg.arg1) {
-                        case BluetoothService.STATE_CONNECTED:
-                            //mTitle.setText(R.string.title_connected_to);
-                            //mTitle.append(mConnectedDeviceName);
-                            mConversationArrayAdapter.clear();
-                            break;
-                        case BluetoothService.STATE_CONNECTING:
-                            //mTitle.setText(R.string.title_connecting);
-                            break;
-                        case BluetoothService.STATE_LISTEN:
-                        case BluetoothService.STATE_NONE:
-                            //mTitle.setText(R.string.title_not_connected);
-                            break;
-                    }
-                    break;
-                case MESSAGE_WRITE:
-                    byte[] writeBuf = (byte[]) msg.obj;
-                    // construct a string from the buffer
-                    String writeMessage = new String(writeBuf);
-                    mConversationArrayAdapter.add("��:  " + writeMessage);
-                    break;
-                case MESSAGE_READ:
-                    byte[] readBuf = (byte[]) msg.obj;
-                    // construct a string from the valid bytes in the buffer
-                    //ComBuffer inbuffer = new ComBuffer(readBuf);
-                    String readMessage = new String(readBuf, 0, msg.arg1);
-                    int readint = Integer.parseInt(readMessage);
-                    break;
-                case MESSAGE_DEVICE_NAME:
-                    // save the connected device's name
-                    mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
-                    Toast.makeText(getApplicationContext(), "Connected to "
-                            + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
-                    break;
-                case MESSAGE_TOAST:
-                    Toast.makeText(getApplicationContext(), msg.getData().getString(TOAST),
-                            Toast.LENGTH_SHORT).show();
-                    break;
-            }
-        }
-    };
-    */
-
 
     // The Handler that gets information back from the BluetoothService
     private final Handler mHandler = new Handler() {
@@ -441,34 +344,22 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                     if(D) Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
                     switch (msg.arg1) {
                         case BluetoothService.STATE_CONNECTED:
-                            dummy_view.setText(R.string.title_connected_to);
-                            dummy_view.append(mConnectedDeviceName);
-                            //mConversationArrayAdapter.clear();
+                            connect_view.setText(R.string.title_connected_to);
+                            connect_view.append(mConnectedDeviceName);
                             break;
                         case BluetoothService.STATE_CONNECTING:
-                            dummy_view.setText(R.string.title_connecting);
+                            connect_view.setText(R.string.title_connecting);
                             break;
                         case BluetoothService.STATE_LISTEN:
                         case BluetoothService.STATE_NONE:
-                            dummy_view.setText(R.string.title_not_connected);
+                            connect_view.setText(R.string.title_not_connected);
                             break;
                     }
                 case MESSAGE_WRITE:
-                    //byte[] writeBuf = (byte[]) msg.obj;
-                    // construct a string from the buffer
-                    //ComBuffer inbuffer = new ComBuffer(writeBuf);
-                    //mConversationArrayAdapter.add("��:  " + writeMessage);
+
                     break;
                 case MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;
-                    // construct a string from the valid bytes in the buffer
-                    //String readMessage = new String(readBuf, 0, msg.arg1);
-                    //mConversationArrayAdapter.add(mConnectedDeviceName+":  " + readMessage);
-                    // construct a string from the valid bytes in the buffer
-                    //String readMessage = new String(readBuf, 0, msg.arg1);
-                    //byte[] newbyte = new byte[readMessage.length()];
-                    //or
-                    //byte[] newbyte = readMessage.getBytes();
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     int readint = Integer.parseInt(readMessage);
                     int[] buttons = new int[3];
@@ -496,6 +387,9 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                             buttons[1] = ((readint % 10000) / 100) - 50;
                             buttons[2] = (readint % 100) - 50;
                             ifmiss(buttons);
+                            break;
+                        case 6: //time's up
+                            rcvtimesup();
                             break;
                         default:
                             break;
@@ -543,7 +437,6 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                 }
         }
     }
-
     @TargetApi(5)
     private void connectDevice(Intent data, boolean secure) {
         // Get the device MAC address
@@ -554,14 +447,12 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
         // Attempt to connect to the device
         mChatService.connect(device, secure);
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.option_menu, menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent serverIntent = null;
@@ -587,18 +478,24 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
     private void do_start(int flag, int[] ints){ // start as user2
         switch (flag) {
             case 1:
+                value = -1;
+                cHandler.sendEmptyMessage(0);
                 this.start_flag = 1;
-                this.user1_view.setText(mConnectedDeviceName);
-                this.user2_view.setText("  ME  ");
-                this.score1 = 0;
-                this.score2 = 0;
-                this.score1_view.setText(String.format("%d ", this.score1));
-                this.score2_view.setText(String.format(" %d", this.score2));
-                this.start_button.setEnabled(false);
-                this.match_button.setEnabled(true);
-                this.miss_button.setEnabled(true);
+
                 this.opp_turn = 1;
+                this.user1_view.setText(mConnectedDeviceName);
+                this.score1 = 0;
+                this.score1_view.setText(String.format("%d ", this.score1));
+
                 this.my_turn = 2;
+                this.user2_view.setText("  ME  ");
+                this.score2 = 0;
+                this.score2_view.setText(String.format(" %d", this.score2));
+
+                this.start_button.setEnabled(false);
+                this.match_button.setEnabled(false);
+                this.miss_button.setEnabled(false);
+
                 for (int i = 0; i < 9; i++) {
                     button_block[i].b_button.setEnabled(false);
                     button_block[i].b_button.setTag(i);
@@ -608,28 +505,58 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                 }
                 for (int j = 0; j < 3; j++) {
                     temp_index = ints[j];
-                    button_block[j].b_button.setImageResource(i_stage.block_array[temp_index].image);
-                    button_block[j].b_backcolor = i_stage.block_array[temp_index].back_color;
-                    button_block[j].b_shapecolor = i_stage.block_array[temp_index].shape_color;
-                    button_block[j].b_shape = i_stage.block_array[temp_index].shape;
+                    switch(ver){
+                        case 2:
+                            button_block[j].b_button.setImageResource(i_stage.block_array2[temp_index].image);
+                            button_block[j].b_backcolor = i_stage.block_array2[temp_index].back_color;
+                            button_block[j].b_shapecolor = i_stage.block_array2[temp_index].shape_color;
+                            button_block[j].b_shape = i_stage.block_array2[temp_index].shape;
+                            break;
+                        case 1:
+                            button_block[j].b_button.setImageResource(i_stage.block_array[temp_index].image);
+                            button_block[j].b_backcolor = i_stage.block_array[temp_index].back_color;
+                            button_block[j].b_shapecolor = i_stage.block_array[temp_index].shape_color;
+                            button_block[j].b_shape = i_stage.block_array[temp_index].shape;
+                        default:
+                    }
                 }
                 break;
             case 2:
                 for (int j = 0; j < 3; j++) {
                     temp_index = ints[j];
-                    button_block[j+3].b_button.setImageResource(i_stage.block_array[temp_index].image);
-                    button_block[j+3].b_backcolor = i_stage.block_array[temp_index].back_color;
-                    button_block[j+3].b_shapecolor = i_stage.block_array[temp_index].shape_color;
-                    button_block[j+3].b_shape = i_stage.block_array[temp_index].shape;
+                    switch(ver){
+                        case 2:
+                            button_block[j+3].b_button.setImageResource(i_stage.block_array2[temp_index].image);
+                            button_block[j+3].b_backcolor = i_stage.block_array2[temp_index].back_color;
+                            button_block[j+3].b_shapecolor = i_stage.block_array2[temp_index].shape_color;
+                            button_block[j+3].b_shape = i_stage.block_array2[temp_index].shape;
+                            break;
+                        case 1:
+                            button_block[j+3].b_button.setImageResource(i_stage.block_array[temp_index].image);
+                            button_block[j+3].b_backcolor = i_stage.block_array[temp_index].back_color;
+                            button_block[j+3].b_shapecolor = i_stage.block_array[temp_index].shape_color;
+                            button_block[j+3].b_shape = i_stage.block_array[temp_index].shape;
+                        default:
+                    }
                 }
                 break;
             case 3:
                 for (int j = 0; j < 3; j++) {
                     temp_index = ints[j];
-                    button_block[j+6].b_button.setImageResource(i_stage.block_array[temp_index].image);
-                    button_block[j+6].b_backcolor = i_stage.block_array[temp_index].back_color;
-                    button_block[j+6].b_shapecolor = i_stage.block_array[temp_index].shape_color;
-                    button_block[j+6].b_shape = i_stage.block_array[temp_index].shape;
+                    switch(ver){
+                        case 2:
+                            button_block[j+6].b_button.setImageResource(i_stage.block_array2[temp_index].image);
+                            button_block[j+6].b_backcolor = i_stage.block_array2[temp_index].back_color;
+                            button_block[j+6].b_shapecolor = i_stage.block_array2[temp_index].shape_color;
+                            button_block[j+6].b_shape = i_stage.block_array2[temp_index].shape;
+                            break;
+                        case 1:
+                            button_block[j+6].b_button.setImageResource(i_stage.block_array[temp_index].image);
+                            button_block[j+6].b_backcolor = i_stage.block_array[temp_index].back_color;
+                            button_block[j+6].b_shapecolor = i_stage.block_array[temp_index].shape_color;
+                            button_block[j+6].b_shape = i_stage.block_array[temp_index].shape;
+                        default:
+                    }
                 }
                 this.finishcount = i_stage.check_finishcount(button_block);
                 this.finish_check_count = finishcount;
@@ -638,71 +565,76 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
         }
     }
     private void play_user(int[] ints){
-        switch (this.my_turn){
-            case 1:
-                if(i_stage.match(button_block[ints[0]-1], button_block[ints[1]-1], button_block[ints[2]-1]) == 1){
-                    for(int t = 0; t < this.finish_check_count; t ++){
-                        if(this.i_stage.hab_array[t][1] == ints[0] - 1){
-                            if(this.i_stage.hab_array[t][2] == ints[1] - 1) {
-                                if(this.i_stage.hab_array[t][3] == ints[2] - 1){
-                                    //first chosen
-                                    if(i_stage.hab_array[t][0] == 0){
-                                        Toast.makeText(this, "Opponent clicked "+ ints[0] + ", " + ints[1] + ", " + ints[2] + " Button\n" + "are correct match +1 point", Toast.LENGTH_SHORT).show();
-                                        this.finishcount--;
-                                        this.score2++;
-                                        this.i_stage.hab_array[t][0] = 1;
-                                        score2_view.setText(String.format(" %d",this.score2));
-                                    }
-                                    //already chosen
-                                    else{
-                                        Toast.makeText(this, "Opponent clicked "+ ints[0] + ", " + ints[1] + ", " + ints[2] + " Button\n" + "are already chose -1 point", Toast.LENGTH_SHORT).show();
-                                        this.score2--;
-                                        score2_view.setText(String.format(" %d", this.score2));
-                                    }
+        if(ints[0] == ints[1]){
+            Toast.makeText(this, "The opponent gave turn to you", Toast.LENGTH_SHORT).show();
+        }else{
+            switch (this.my_turn){
+                case 1:
+                    if(i_stage.match(button_block[ints[0]-1], button_block[ints[1]-1], button_block[ints[2]-1]) == 1){
+                        for(int t = 0; t < this.finish_check_count; t ++){
+                            if(this.i_stage.hab_array[t][1] == ints[0] - 1){
+                                if(this.i_stage.hab_array[t][2] == ints[1] - 1) {
+                                    if(this.i_stage.hab_array[t][3] == ints[2] - 1){
+                                        //first chosen
+                                        if(i_stage.hab_array[t][0] == 0){
+                                            Toast.makeText(this, "Opponent clicked "+ ints[0] + ", " + ints[1] + ", " + ints[2] + " Button\n" + "are correct match +1 point", Toast.LENGTH_SHORT).show();
+                                            this.finishcount--;
+                                            this.score2++;
+                                            this.i_stage.hab_array[t][0] = 1;
+                                            score2_view.setText(String.format(" %d",this.score2));
+                                        }
+                                        //already chosen
+                                        else{
+                                            Toast.makeText(this, "Opponent clicked "+ ints[0] + ", " + ints[1] + ", " + ints[2] + " Button\n" + "are already chose -1 point", Toast.LENGTH_SHORT).show();
+                                            this.score2--;
+                                            score2_view.setText(String.format(" %d", this.score2));
+                                        }
+                                    }else continue;
                                 }else continue;
                             }else continue;
-                        }else continue;
+                        }
                     }
-                }
-                else{
-                    //incorrect
-                    Toast.makeText(this, "Opponent clicked "+ ints[0] + ", " + ints[1] + ", " + ints[2] + " Button\n"+ "are NOT matched!! -1 point", Toast.LENGTH_SHORT).show();
-                    this.score2--;
-                    score2_view.setText(String.format(" %d",this.score2));
-                }
-                break;
-            case 2:
-                if(i_stage.match(button_block[ints[0]-1], button_block[ints[1]-1], button_block[ints[2]-1]) == 1){
-                    for(int t = 0; t < this.finish_check_count; t ++){
-                        if(this.i_stage.hab_array[t][1] == ints[0] - 1){
-                            if(this.i_stage.hab_array[t][2] == ints[1] - 1) {
-                                if(this.i_stage.hab_array[t][3] == ints[2] - 1){
-                                    //first chosen
-                                    if(i_stage.hab_array[t][0] == 0){
-                                        Toast.makeText(this, "Opponent clicked "+ ints[0] + ", " + ints[1] + ", " + ints[2] + " Button\n" + "are correct match +1 point", Toast.LENGTH_SHORT).show();
-                                        this.finishcount--;
-                                        this.score1++;
-                                        this.i_stage.hab_array[t][0] = 1;
-                                        score1_view.setText(String.format("%d ",this.score1));
-                                    }
-                                    //already chosen
-                                    else{
-                                        Toast.makeText(this, "Opponent clicked "+ ints[0] + ", " + ints[1] + ", " + ints[2] + " Button\n" + "are already chose -1 point", Toast.LENGTH_SHORT).show();
-                                        this.score1--;
-                                        score1_view.setText(String.format("%d ", this.score1));
-                                    }
+                    else{
+                        //incorrect
+                        Toast.makeText(this, "Opponent clicked "+ ints[0] + ", " + ints[1] + ", " + ints[2] + " Button\n"+ "are NOT matched!! -1 point", Toast.LENGTH_SHORT).show();
+                        this.score2--;
+                        score2_view.setText(String.format(" %d",this.score2));
+                    }
+                    break;
+                case 2:
+                    if(i_stage.match(button_block[ints[0]-1], button_block[ints[1]-1], button_block[ints[2]-1]) == 1){
+                        for(int t = 0; t < this.finish_check_count; t ++){
+                            if(this.i_stage.hab_array[t][1] == ints[0] - 1){
+                                if(this.i_stage.hab_array[t][2] == ints[1] - 1) {
+                                    if(this.i_stage.hab_array[t][3] == ints[2] - 1){
+                                        //first chosen
+                                        if(i_stage.hab_array[t][0] == 0){
+                                            Toast.makeText(this, "Opponent clicked "+ ints[0] + ", " + ints[1] + ", " + ints[2] + " Button\n" + "are correct match +1 point", Toast.LENGTH_SHORT).show();
+                                            this.finishcount--;
+                                            this.score1++;
+                                            this.i_stage.hab_array[t][0] = 1;
+                                            score1_view.setText(String.format("%d ",this.score1));
+                                        }
+                                        //already chosen
+                                        else{
+                                            Toast.makeText(this, "Opponent clicked "+ ints[0] + ", " + ints[1] + ", " + ints[2] + " Button\n" + "are already chose -1 point", Toast.LENGTH_SHORT).show();
+                                            this.score1--;
+                                            score1_view.setText(String.format("%d ", this.score1));
+                                        }
+                                    }else continue;
                                 }else continue;
                             }else continue;
-                        }else continue;
+                        }
                     }
-                }
-                else{
-                    //incorrect
-                    Toast.makeText(this, "Opponent clicked "+ ints[0] + ", " + ints[1] + ", " + ints[2] + " Button\n"+ "are NOT matched!! -1 point", Toast.LENGTH_SHORT).show();
-                    this.score1--;
-                    score1_view.setText(String.format("%d ",this.score1));
-                }
-                break;
+                    else{
+                        //incorrect
+                        Toast.makeText(this, "Opponent clicked "+ ints[0] + ", " + ints[1] + ", " + ints[2] + " Button\n"+ "are NOT matched!! -1 point", Toast.LENGTH_SHORT).show();
+                        this.score1--;
+                        score1_view.setText(String.format("%d ",this.score1));
+                    }
+                    break;
+
+            }
 
         }
         match_button.setBackgroundColor(00000000);
@@ -710,8 +642,13 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
         match_button.setEnabled(true);
         click_count = 0;
         matchflag = 0;
+        value = 30;
+        cHandler.sendEmptyMessage(0);
+
     }
     private void ifmiss(int[] ints){
+        value = 30;
+        cHandler.sendEmptyMessage(0);
         matchflag = 0;
         click_count = 0;
         switch(this.my_turn){
@@ -722,13 +659,14 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                         button_block[i].b_button.setEnabled(false);
                         button_block[i].b_button.setTag(i);
                         button_block[i].b_button.setOnClickListener(this);
-                        button_block[i].b_button.setBackgroundColor(Color.LTGRAY);
+                        button_block[i].b_button.setBackgroundColor(Color.RED);
                         button_block[i].b_position = 0;
                     }
+                    value = -1;
                     this.score2 = this.score2 + 3;
                     score2_view.setText(String.format("%d ", this.score2));
                 } else {
-                    Toast.makeText(this, "Opponent not miss yet -1 point", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Opponent clicked miss button\n not miss yet -1 point", Toast.LENGTH_SHORT).show();
                     for(int i =0; i<9; i++){
                         button_block[i].b_button.setEnabled(false);
                         button_block[i].b_button.setTag(i);
@@ -750,10 +688,11 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                         button_block[i].b_button.setBackgroundColor(Color.LTGRAY);
                         button_block[i].b_position = 0;
                     }
+                    value = -1;
                     this.score1 = this.score1 + 3;
                     score1_view.setText(String.format("%d ", this.score1));
                 } else {
-                    Toast.makeText(this, "not miss yet -1 point", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Opponent clicked miss button\n not miss yet -1 point", Toast.LENGTH_SHORT).show();
                     for(int i =0; i<9; i++){
                         button_block[i].b_button.setEnabled(false);
                         button_block[i].b_button.setTag(i);
@@ -767,74 +706,70 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                 break;
         }
     }
-
+    private void sndtimesup(){
+        int c = 111111;
+        String q = Integer.toString(c);
+        c = 0;
+        String message6 = "6"+q;
+        sendMessage(message6);
+        waitforsend();
+    }
+    private void rcvtimesup(){
+        Toast.makeText(this, "Opponent time is up!!", Toast.LENGTH_SHORT).show();
+        match_button.setEnabled(true);
+        miss_button.setEnabled(true);
+        matchflag = 0;
+        value = 30;
+        cHandler.sendEmptyMessage(0);
+    }
 
 
     public void onClick(View v) {
         ImageButton newButton = (ImageButton) v;
         Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE); //진동을위해
 
-        /*
-        if(newButton == mSendButton) {
-            // Send a message using content of the edit text widget
-            //TextView view = (TextView) findViewById(R.id.edit_text_out);
-            //String message = view.getText().toString();
-            int a = 101020304;
-            String message1 = Integer.toString(a);
-            sendMessage(message1);
-            waitforsend();
-            int b = 204050607;
-            String message2 = Integer.toString(b);
-            sendMessage(message2);
-            waitforsend();
-            int c = 307080910;
-            String message3 = Integer.toString(c);
-            sendMessage(message3);
-            waitforsend();
-            int t = 10;
-            String q = Integer.toString(t);
-            int y = 51;
-            String w = Integer.toString(y);
-            int u = 12;
-            String e = Integer.toString(u);
-            int i = 21;
-            String r = Integer.toString(i);
-            String message4 = "4"+q+w+e+r;
-            sendMessage(message4);
-            waitforsend();
-        }
-        */
-
         if(newButton == start_button){ //click start ; start as user1
             start_flag = 1;
+            my_turn = 1;
+            opp_turn = 2;
+            score1 = 0;
+            score2 = 0;
+
             Collections.shuffle(i_stage.ranNumber);
             for (int i = 0; i < 9; i++) {
                 button_block[i].b_button.setEnabled(false);
                 button_block[i].b_button.setTag(i);
                 button_block[i].b_button.setOnClickListener(this);
                 temp_index = i_stage.ranNumber.get(i);
-                button_block[i].b_button.setImageResource(i_stage.block_array[temp_index].image);
                 button_block[i].b_button.setBackgroundColor(00000000);
-                button_block[i].b_backcolor = i_stage.block_array[temp_index].back_color;
-                button_block[i].b_shapecolor = i_stage.block_array[temp_index].shape_color;
-                button_block[i].b_shape = i_stage.block_array[temp_index].shape;
                 button_block[i].b_position = 0;
+                switch(ver){
+                    case 2:
+                        button_block[i].b_button.setImageResource(i_stage.block_array2[temp_index].image);
+                        button_block[i].b_backcolor = i_stage.block_array2[temp_index].back_color;
+                        button_block[i].b_shapecolor = i_stage.block_array2[temp_index].shape_color;
+                        button_block[i].b_shape = i_stage.block_array2[temp_index].shape;
+                        break;
+                    case 1:
+                        button_block[i].b_button.setImageResource(i_stage.block_array[temp_index].image);
+                        button_block[i].b_backcolor = i_stage.block_array[temp_index].back_color;
+                        button_block[i].b_shapecolor = i_stage.block_array[temp_index].shape_color;
+                        button_block[i].b_shape = i_stage.block_array[temp_index].shape;
+                    default:
+                }
             }
             finishcount = i_stage.check_finishcount(button_block);
             finish_check_count = finishcount;
 
+            value = 30;
             cHandler.sendEmptyMessage(0);
             user1_view.setText("  ME  ");
             score1_view.setText(String.format("%d ", score1));
             user2_view.setText(mConnectedDeviceName);
-            score2_view.setText(String.format("%d ", score2));
+            score2_view.setText(String.format(" %d", score2));
             start_button.setEnabled(false);
             match_button.setEnabled(true);
             miss_button.setEnabled(true);
-            my_turn = 1;
-            opp_turn = 2;
-            score1 = 0;
-
 
 
             int z = i_stage.ranNumber.get(0) + 50;
@@ -875,19 +810,42 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
             String message3 = "3"+q+w+e;
             sendMessage(message3);
             waitforsend();
-
         }
 
         if(start_flag == 1 && my_turn == 1){///////////play as user1
             ImageButton tempButton;
             if(newButton == match_button){
-                int color = getResources().getColor(R.color.match_color);
-                match_button.setBackgroundColor(color);
-                for(int i =0; i<9; i++) {
-                    button_block[i].b_button.setEnabled(true);
+                if (matchflag == 0) {
+                    int color = getResources().getColor(R.color.match_color);
+                    match_button.setBackgroundColor(color);
+                    for(int i =0; i<9; i++) {
+                        button_block[i].b_button.setEnabled(true);
+                    }
+                    miss_button.setEnabled(false);
+                    matchflag = 1;
+                }else if(matchflag == 1){
+                    match_button.setBackgroundColor(00000000);
+                    for(int i =0; i<9; i++) {
+                        button_block[i].b_button.setEnabled(false);
+                    }
+                    Toast.makeText(this, "Give turn to the opponent", Toast.LENGTH_SHORT).show();
+                    value = -1;
+                    match_button.setEnabled(false);
+                    miss_button.setEnabled(false);
+                    matchflag = 0;
+                    int z = 10+50;
+                    String q = Integer.toString(z);
+                    z = 0;
+                    int x = 10+50;
+                    String w = Integer.toString(x);
+                    x = 0;
+                    int c = 10+50;
+                    String e = Integer.toString(c);
+                    c = 0;
+                    String message4 = "4"+q+w+e;
+                    sendMessage(message4);
+                    waitforsend();
                 }
-                miss_button.setEnabled(false);
-                matchflag = 1;
             }
 
             if(matchflag == 1){
@@ -944,7 +902,9 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                                 button_block[index_array[t]-1].b_position = 0;
                             }
                             match_button.setBackgroundColor(00000000);
-                            miss_button.setEnabled(true);
+                            match_button.setEnabled(false);
+                            miss_button.setEnabled(false);
+                            value = -1;
                             click_count = 0;
                             matchflag = 0;
 
@@ -970,24 +930,6 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                 if (finishcount == 0) {
                     Toast.makeText(this, "Miss. +3 points", Toast.LENGTH_SHORT).show();
                     score1 = score1 + 3;
-                    /*
-                    Collections.shuffle(i_stage.ranNumber);
-
-                    for(int i =0; i<9; i++){
-                        button_block[i].b_button.setEnabled(false);
-                        button_block[i].b_button.setTag(i);
-                        button_block[i].b_button.setOnClickListener(this);
-                        temp_index = i_stage.ranNumber.get(i);
-                        button_block[i].b_button.setImageResource(i_stage.block_array[temp_index].image);
-                        button_block[i].b_button.setBackgroundColor(00000000);
-                        button_block[i].b_backcolor = i_stage.block_array[temp_index].back_color;
-                        button_block[i].b_shapecolor = i_stage.block_array[temp_index].shape_color;
-                        button_block[i].b_shape = i_stage.block_array[temp_index].shape;
-                        button_block[i].b_position = 0;
-                    }
-                    finishcount = i_stage.check_finishcount(button_block);
-                    finish_check_count = finishcount;
-                    */
 
                     for(int i =0; i<9; i++){
                         button_block[i].b_button.setEnabled(false);
@@ -1010,6 +952,10 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                     score1--;
                     score1_view.setText(String.format("%d ", score1));
                 }
+                match_button.setBackgroundColor(00000000);
+                match_button.setEnabled(false);
+                miss_button.setEnabled(false);
+                value = -1;
 
                 int z = 11 + 50;
                 String q = Integer.toString(z);
@@ -1025,15 +971,40 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                 waitforsend();
             }
 
-        }else if(start_flag == 1 && my_turn == 2){///////////play as user2
+        }else if(start_flag == 1 && my_turn == 2) {///////////play as user2
             ImageButton tempButton;
             if(newButton == match_button){
-                match_button.setBackgroundColor(Color.BLUE);
-                for(int i =0; i<9; i++) {
-                    button_block[i].b_button.setEnabled(true);
+                if (matchflag == 0) {
+                    int color = getResources().getColor(R.color.match_color);
+                    match_button.setBackgroundColor(color);
+                    for(int i =0; i<9; i++) {
+                        button_block[i].b_button.setEnabled(true);
+                    }
+                    miss_button.setEnabled(false);
+                    matchflag = 1;
+                }else if(matchflag == 1){
+                    match_button.setBackgroundColor(00000000);
+                    for(int i =0; i<9; i++) {
+                        button_block[i].b_button.setEnabled(false);
+                    }
+                    Toast.makeText(this, "Give turn to the opponent", Toast.LENGTH_SHORT).show();
+                    value = -1;
+                    match_button.setEnabled(false);
+                    miss_button.setEnabled(false);
+                    matchflag = 0;
+                    int z = 10+50;
+                    String q = Integer.toString(z);
+                    z = 0;
+                    int x = 10+50;
+                    String w = Integer.toString(x);
+                    x = 0;
+                    int c = 10+50;
+                    String e = Integer.toString(c);
+                    c = 0;
+                    String message4 = "4"+q+w+e;
+                    sendMessage(message4);
+                    waitforsend();
                 }
-                miss_button.setEnabled(false);
-                matchflag = 1;
             }
 
             if(matchflag == 1){
@@ -1066,13 +1037,13 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                                                     score2++;
                                                     finishcount--;
                                                     i_stage.hab_array[t][0] = 1;
-                                                    score1_view.setText(String.format("%d ",score2));
+                                                    score2_view.setText(String.format(" %d",score2));
                                                 }
                                                 //already chosen
                                                 else{
                                                     Toast.makeText(this, "clicked "+ index_array[0] + ", " + index_array[1] + ", " + index_array[2] + " Button\n" + "are already chose -1 point", Toast.LENGTH_SHORT).show();
                                                     score2--;
-                                                    score2_view.setText(String.format("%d ", score2));
+                                                    score2_view.setText(String.format(" %d", score2));
                                                 }
                                             }else continue;
                                         }else continue;
@@ -1083,17 +1054,18 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                                 //incorrect
                                 Toast.makeText(this, "clicked "+ index_array[0] + ", " + index_array[1] + ", " + index_array[2] + " Button\n"+ "are NOT matched!! -1 point", Toast.LENGTH_SHORT).show();
                                 score2--;
-                                score2_view.setText(String.format("%d ",score2));
+                                score2_view.setText(String.format(" %d",score2));
                             }
                             for(int t=0; t<3; t++){
                                 button_block[index_array[t]-1].b_button.setBackgroundColor(00000000);
                                 button_block[index_array[t]-1].b_position = 0;
                             }
                             match_button.setBackgroundColor(00000000);
-                            miss_button.setEnabled(true);
+                            match_button.setEnabled(false);
+                            miss_button.setEnabled(false);
+                            value = -1;
                             click_count = 0;
                             matchflag = 0;
-
 
                             int z = index_array[0] + 50;
                             String q = Integer.toString(z);
@@ -1116,26 +1088,6 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                 click_count = 0;
                 if (finishcount == 0) {
                     Toast.makeText(this, "Miss. +3 points", Toast.LENGTH_SHORT).show();
-                    score2 = score2 + 3;
-                    /*
-                    Collections.shuffle(i_stage.ranNumber);
-
-                    for(int i =0; i<9; i++){
-                        button_block[i].b_button.setEnabled(false);
-                        button_block[i].b_button.setTag(i);
-                        button_block[i].b_button.setOnClickListener(this);
-                        temp_index = i_stage.ranNumber.get(i);
-                        button_block[i].b_button.setImageResource(i_stage.block_array[temp_index].image);
-                        button_block[i].b_button.setBackgroundColor(00000000);
-                        button_block[i].b_backcolor = i_stage.block_array[temp_index].back_color;
-                        button_block[i].b_shapecolor = i_stage.block_array[temp_index].shape_color;
-                        button_block[i].b_shape = i_stage.block_array[temp_index].shape;
-                        button_block[i].b_position = 0;
-                    }
-                    finishcount = i_stage.check_finishcount(button_block);
-                    finish_check_count = finishcount;
-                    */
-                    score2_view.setText(String.format("%d ", score2));
                     for(int i =0; i<9; i++){
                         button_block[i].b_button.setEnabled(false);
                         button_block[i].b_button.setTag(i);
@@ -1143,6 +1095,8 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                         button_block[i].b_button.setBackgroundColor(getResources().getColor(R.color.match_color));
                         button_block[i].b_position = 0;
                     }
+                    score2 = score2 + 3;
+                    score2_view.setText(String.format(" %d", score2));
 
                 } else {
                     Toast.makeText(this, "not miss yet -1 point", Toast.LENGTH_SHORT).show();
@@ -1154,8 +1108,12 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                         button_block[i].b_position = 0;
                     }
                     score2--;
-                    score2_view.setText(String.format("%d ", score2));
+                    score2_view.setText(String.format(" %d", score2));
                 }
+                match_button.setBackgroundColor(00000000);
+                match_button.setEnabled(false);
+                miss_button.setEnabled(false);
+                value = -1;
 
                 int z = 11 + 50;
                 String q = Integer.toString(z);
@@ -1170,44 +1128,16 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                 sendMessage(message5);
                 waitforsend();
             }
-        }
-    }
 
-    private  byte[] IntToByteArray(final int integer){
-        ByteBuffer buffer = ByteBuffer.allocateDirect(Integer.SIZE / 8);
-        buffer.putInt(integer);
-        buffer.order(ByteOrder.BIG_ENDIAN);
-        return buffer.array();
-    }
-    private static int byteArrayToInt(byte[] bytes){
-        final int size = Integer.SIZE / 8;
-        ByteBuffer buffer = ByteBuffer.allocate(size);
-        final byte[] newBytes = new byte[size];
-        for(int i = 0; i < size; i++){
-            if(i + bytes.length < size){
-                newBytes[i] = (byte) 0x00;
-            }else{
-                newBytes[i] = bytes[i+bytes.length - size];
-            }
+
         }
-        buffer = ByteBuffer.wrap(newBytes);
-        buffer.order(ByteOrder.BIG_ENDIAN);
-        return buffer.getInt();
     }
 
     private void waitforsend(){
         try{
-            Thread.sleep(100);
+            Thread.sleep(50);
         }catch(InterruptedException e){
             System.out.println(e.getMessage());
         }
     }
-
-    /*
-    public byte Int2byte(int in){
-        String ret_stemp = String.format("%d", in);
-        byte[] ret_byte = ret_stemp.getBytes();
-        return ret_byte[0];
-    }
-    */
 }
