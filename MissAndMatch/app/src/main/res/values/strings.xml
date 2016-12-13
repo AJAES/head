@@ -23,7 +23,6 @@
     <string name="title_device_list">DeviceList</string>
 
 
-
     <!--  BluetoothChat -->
     <string name="send">전송</string>
     <string name="not_connected">No Connection</string>

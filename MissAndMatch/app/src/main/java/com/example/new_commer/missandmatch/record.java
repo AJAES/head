@@ -24,13 +24,13 @@ import android.widget.TextView;
 
 public class record extends AppCompatActivity {
 
-    ImageButton back_button;
-    ImageView t_record;
-    ImageButton del_button;
-    TextView t_result;
+    private ImageButton back_button;
+    private ImageView t_record;
+    private ImageButton del_button;
+    private TextView t_result;
 
-    DataBase db_open;
-    SQLiteDatabase db;
+    //DataBase db_open;
+    //SQLiteDatabase db;
 
     int score;
     int round;
@@ -40,7 +40,7 @@ public class record extends AppCompatActivity {
     int vibe=0;
     Vibrator vibrator;
 
-    int[][] save = new int[10][4];
+    //int[][] save = new int[10][4];
 
     DataBase dbHelper;
 
@@ -87,7 +87,8 @@ public class record extends AppCompatActivity {
                 back_button.setImageResource(R.drawable.b2_back);
                 del_button.setImageResource(R.drawable.b2_delete);
                 t_record.setImageResource(R.drawable.t_record);
-                t_result.setTextColor(color2);
+                t_result.setTextColor(Color.CYAN);
+                //t_result.setTextColor(color2);
                 Drawable drawable = res.getDrawable(R.drawable.b2_singleplay_back); //new Image that was added to the res folder
                 main.setBackground(drawable);
                 break;

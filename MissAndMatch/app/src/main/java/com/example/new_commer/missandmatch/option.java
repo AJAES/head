@@ -17,13 +17,12 @@ import android.widget.RelativeLayout;
 
 public class option extends AppCompatActivity {
 
-    int ver = 0;
-    int out=0;
-    int out1=0;
-    int vibe=0;
-    ImageButton option;
-    ImageButton back;
-    ImageButton b_vibe;
+    private int ver = 0;
+    private  int out=0;
+    private  int vibe=0;
+    private ImageButton option;
+    private ImageButton back_button;
+    private ImageButton b_vibe;
 
     Vibrator vibrator;
 
@@ -40,8 +39,8 @@ public class option extends AppCompatActivity {
         option = (ImageButton) findViewById(R.id.b_opt);
         option.setBackgroundColor(000000);
 
-        back = (ImageButton) findViewById(R.id.b_back_option);
-        back.setBackgroundColor(000000);
+        back_button = (ImageButton) findViewById(R.id.b_back_option);
+        back_button.setBackgroundColor(000000);
 
         b_vibe = (ImageButton) findViewById(R.id.b_vive);
         b_vibe.setBackgroundColor(000000);
@@ -53,7 +52,7 @@ public class option extends AppCompatActivity {
         switch (ver) {
             case 1: {
                 option.setImageResource(R.drawable.b1_change);
-                back.setImageResource(R.drawable.b1_back);
+                back_button.setImageResource(R.drawable.b1_back);
                 b_vibe.setImageResource(R.drawable.b1_vibe);
                 Drawable drawable = res.getDrawable(R.drawable.b1_main_back); //new Image that was added to the res folder
                 main.setBackground(drawable);
@@ -61,7 +60,7 @@ public class option extends AppCompatActivity {
             }
             case 2: {
                 option.setImageResource(R.drawable.b2_change);
-                back.setImageResource(R.drawable.b2_back);
+                back_button.setImageResource(R.drawable.b2_back);
                 b_vibe.setImageResource(R.drawable.b2_vibe);
                 Drawable drawable = res.getDrawable(R.drawable.b2_main_back); //new Image that was added to the res folder
                 main.setBackground(drawable);
@@ -69,7 +68,7 @@ public class option extends AppCompatActivity {
             }
         }
 
-        back.setOnClickListener(new View.OnClickListener(){
+        back_button.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 vibrator.vibrate(vibe*100);

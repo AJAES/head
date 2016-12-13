@@ -48,9 +48,9 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
     private int opp_turn = 0;
     private int position = 0;                     //for checking button
     private int matchflag = 0;                    //if clicked match button
-    int value = -1;                                 //time
-    int ver=1;                                       //option
-    int vibe =0;                                     //vibration
+    private int value = -1;                                 //time
+    private int ver=1;                                       //option
+    private int vibe =0;                                     //vibration
 
     ImageButton back_button;
     ImageButton miss_button;
@@ -65,7 +65,7 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
     TextView score1_view;
     TextView score2_view;
 
-    private stage i_stage = new stage();
+    private stage2 i_stage = new stage2();
     private stage_block[] button_block = new stage_block[9];
 
     // Debugging
@@ -183,7 +183,6 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                 main.setBackground(drawable);
                 break;
             }
-
             case 2: {
                 start_button.setImageResource(R.drawable.b2_start);
                 back_button.setImageResource(R.drawable.b2_back);
@@ -566,7 +565,7 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
     }
     private void play_user(int[] ints){
         if(ints[0] == ints[1]){
-            Toast.makeText(this, "The opponent gave turn to you", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "The opponent ended the turn", Toast.LENGTH_SHORT).show();
         }else{
             switch (this.my_turn){
                 case 1:
@@ -577,7 +576,7 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                                     if(this.i_stage.hab_array[t][3] == ints[2] - 1){
                                         //first chosen
                                         if(i_stage.hab_array[t][0] == 0){
-                                            Toast.makeText(this, "Opponent clicked "+ ints[0] + ", " + ints[1] + ", " + ints[2] + " Button\n" + "are correct match +1 point", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(this, "Opponent clicked "+ ints[0] + ", " + ints[1] + ", " + ints[2] + " Buttons\n" + "are MATCH +1 point", Toast.LENGTH_SHORT).show();
                                             this.finishcount--;
                                             this.score2++;
                                             this.i_stage.hab_array[t][0] = 1;
@@ -585,7 +584,7 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                                         }
                                         //already chosen
                                         else{
-                                            Toast.makeText(this, "Opponent clicked "+ ints[0] + ", " + ints[1] + ", " + ints[2] + " Button\n" + "are already chose -1 point", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(this, "Opponent clicked "+ ints[0] + ", " + ints[1] + ", " + ints[2] + " Buttons\n" + "are already chosen -1 point", Toast.LENGTH_SHORT).show();
                                             this.score2--;
                                             score2_view.setText(String.format(" %d", this.score2));
                                         }
@@ -596,7 +595,7 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                     }
                     else{
                         //incorrect
-                        Toast.makeText(this, "Opponent clicked "+ ints[0] + ", " + ints[1] + ", " + ints[2] + " Button\n"+ "are NOT matched!! -1 point", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Opponent clicked "+ ints[0] + ", " + ints[1] + ", " + ints[2] + " Buttons\n"+ "are NOT MATCH!! -1 point", Toast.LENGTH_SHORT).show();
                         this.score2--;
                         score2_view.setText(String.format(" %d",this.score2));
                     }
@@ -609,7 +608,7 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                                     if(this.i_stage.hab_array[t][3] == ints[2] - 1){
                                         //first chosen
                                         if(i_stage.hab_array[t][0] == 0){
-                                            Toast.makeText(this, "Opponent clicked "+ ints[0] + ", " + ints[1] + ", " + ints[2] + " Button\n" + "are correct match +1 point", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(this, "Opponent clicked "+ ints[0] + ", " + ints[1] + ", " + ints[2] + " Buttons\n" + "are MATCH +1 point", Toast.LENGTH_SHORT).show();
                                             this.finishcount--;
                                             this.score1++;
                                             this.i_stage.hab_array[t][0] = 1;
@@ -617,7 +616,7 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                                         }
                                         //already chosen
                                         else{
-                                            Toast.makeText(this, "Opponent clicked "+ ints[0] + ", " + ints[1] + ", " + ints[2] + " Button\n" + "are already chose -1 point", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(this, "Opponent clicked "+ ints[0] + ", " + ints[1] + ", " + ints[2] + " Buttons\n" + "are already chosen -1 point", Toast.LENGTH_SHORT).show();
                                             this.score1--;
                                             score1_view.setText(String.format("%d ", this.score1));
                                         }
@@ -628,7 +627,7 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                     }
                     else{
                         //incorrect
-                        Toast.makeText(this, "Opponent clicked "+ ints[0] + ", " + ints[1] + ", " + ints[2] + " Button\n"+ "are NOT matched!! -1 point", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Opponent clicked "+ ints[0] + ", " + ints[1] + ", " + ints[2] + " Buttons\n"+ "are NOT MATCH!! -1 point", Toast.LENGTH_SHORT).show();
                         this.score1--;
                         score1_view.setText(String.format("%d ",this.score1));
                     }
@@ -649,12 +648,14 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
     private void ifmiss(int[] ints){
         value = 30;
         cHandler.sendEmptyMessage(0);
+        miss_button.setEnabled(true);
+        match_button.setEnabled(true);
         matchflag = 0;
         click_count = 0;
         switch(this.my_turn){
             case 1:
                 if (finishcount == 0) {
-                    Toast.makeText(this, "Opponent Miss. +3 points", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Opponent got MISS. +3 points", Toast.LENGTH_SHORT).show();
                     for(int i =0; i<9; i++){
                         button_block[i].b_button.setEnabled(false);
                         button_block[i].b_button.setTag(i);
@@ -666,7 +667,7 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                     this.score2 = this.score2 + 3;
                     score2_view.setText(String.format("%d ", this.score2));
                 } else {
-                    Toast.makeText(this, "Opponent clicked miss button\n not miss yet -1 point", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Opponent clicked MISS button\n NOT MISS yet -1 point", Toast.LENGTH_SHORT).show();
                     for(int i =0; i<9; i++){
                         button_block[i].b_button.setEnabled(false);
                         button_block[i].b_button.setTag(i);
@@ -680,7 +681,7 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                 break;
             case 2:
                 if (finishcount == 0) {
-                    Toast.makeText(this, "Opponent Miss. +3 points", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Opponent got MISS. +3 points", Toast.LENGTH_SHORT).show();
                     for(int i =0; i<9; i++){
                         button_block[i].b_button.setEnabled(false);
                         button_block[i].b_button.setTag(i);
@@ -692,7 +693,7 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                     this.score1 = this.score1 + 3;
                     score1_view.setText(String.format("%d ", this.score1));
                 } else {
-                    Toast.makeText(this, "Opponent clicked miss button\n not miss yet -1 point", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Opponent clicked MISS button\n NOT MISS yet -1 point", Toast.LENGTH_SHORT).show();
                     for(int i =0; i<9; i++){
                         button_block[i].b_button.setEnabled(false);
                         button_block[i].b_button.setTag(i);
@@ -715,7 +716,7 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
         waitforsend();
     }
     private void rcvtimesup(){
-        Toast.makeText(this, "Opponent time is up!!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "The opponent's time is up!!", Toast.LENGTH_SHORT).show();
         match_button.setEnabled(true);
         miss_button.setEnabled(true);
         matchflag = 0;
@@ -828,7 +829,7 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                     for(int i =0; i<9; i++) {
                         button_block[i].b_button.setEnabled(false);
                     }
-                    Toast.makeText(this, "Give turn to the opponent", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "End my turn", Toast.LENGTH_SHORT).show();
                     value = -1;
                     match_button.setEnabled(false);
                     miss_button.setEnabled(false);
@@ -858,7 +859,7 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                             if (button_block[position].b_position == 0) {
                                 click_count++;
                                 button_block[position].b_position = 1;
-                                button_block[position].b_button.setBackgroundColor(Color.LTGRAY);
+                                button_block[position].b_button.setBackgroundColor(Color.RED);
                             } else if (button_block[position].b_position == 1) {
                                 button_block[position].b_position = 0;
                                 click_count--;
@@ -874,7 +875,7 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                                             if(i_stage.hab_array[t][3] == index_array[2] - 1){
                                                 //first chosen
                                                 if(i_stage.hab_array[t][0] == 0){
-                                                    Toast.makeText(this, "clicked "+ index_array[0] + ", " + index_array[1] + ", " + index_array[2] + " Button\n" + "are correct match +1 point", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(this, "clicked "+ index_array[0] + ", " + index_array[1] + ", " + index_array[2] + " Buttons\n" + "are MATCH +1 point", Toast.LENGTH_SHORT).show();
                                                     score1++;
                                                     finishcount--;
                                                     i_stage.hab_array[t][0] = 1;
@@ -882,7 +883,7 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                                                 }
                                                 //already chosen
                                                 else{
-                                                    Toast.makeText(this, "clicked "+ index_array[0] + ", " + index_array[1] + ", " + index_array[2] + " Button\n" + "are already chose -1 point", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(this, "clicked "+ index_array[0] + ", " + index_array[1] + ", " + index_array[2] + " Buttons\n" + "are already chosen -1 point", Toast.LENGTH_SHORT).show();
                                                     score1--;
                                                     score1_view.setText(String.format("%d ", score1));
                                                 }
@@ -893,7 +894,7 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                             }
                             else{
                                 //incorrect
-                                Toast.makeText(this, "clicked "+ index_array[0] + ", " + index_array[1] + ", " + index_array[2] + " Button\n"+ "are NOT matched!! -1 point", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, "clicked "+ index_array[0] + ", " + index_array[1] + ", " + index_array[2] + " Buttons\n"+ "are NOT MATCH!! -1 point", Toast.LENGTH_SHORT).show();
                                 score1--;
                                 score1_view.setText(String.format("%d ",score1));
                             }
@@ -928,7 +929,7 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                 matchflag = 0;
                 click_count = 0;
                 if (finishcount == 0) {
-                    Toast.makeText(this, "Miss. +3 points", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "MISS. +3 points", Toast.LENGTH_SHORT).show();
                     score1 = score1 + 3;
 
                     for(int i =0; i<9; i++){
@@ -941,7 +942,7 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                     score1_view.setText(String.format("%d ", score1));
 
                 } else {
-                    Toast.makeText(this, "not miss yet -1 point", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "NOT MISS yet -1 point", Toast.LENGTH_SHORT).show();
                     for(int i =0; i<9; i++){
                         button_block[i].b_button.setEnabled(false);
                         button_block[i].b_button.setTag(i);
@@ -987,7 +988,7 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                     for(int i =0; i<9; i++) {
                         button_block[i].b_button.setEnabled(false);
                     }
-                    Toast.makeText(this, "Give turn to the opponent", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "End my turn", Toast.LENGTH_SHORT).show();
                     value = -1;
                     match_button.setEnabled(false);
                     miss_button.setEnabled(false);
@@ -1017,7 +1018,7 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                             if (button_block[position].b_position == 0) {
                                 click_count++;
                                 button_block[position].b_position = 1;
-                                button_block[position].b_button.setBackgroundColor(Color.LTGRAY);
+                                button_block[position].b_button.setBackgroundColor(Color.RED);
                             } else if (button_block[position].b_position == 1) {
                                 button_block[position].b_position = 0;
                                 click_count--;
@@ -1033,7 +1034,7 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                                             if(i_stage.hab_array[t][3] == index_array[2] - 1){
                                                 //first chosen
                                                 if(i_stage.hab_array[t][0] == 0){
-                                                    Toast.makeText(this, "clicked "+ index_array[0] + ", " + index_array[1] + ", " + index_array[2] + " Button\n" + "are correct match +1 point", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(this, "clicked "+ index_array[0] + ", " + index_array[1] + ", " + index_array[2] + " Buttons\n" + "are MATCH +1 point", Toast.LENGTH_SHORT).show();
                                                     score2++;
                                                     finishcount--;
                                                     i_stage.hab_array[t][0] = 1;
@@ -1041,7 +1042,7 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                                                 }
                                                 //already chosen
                                                 else{
-                                                    Toast.makeText(this, "clicked "+ index_array[0] + ", " + index_array[1] + ", " + index_array[2] + " Button\n" + "are already chose -1 point", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(this, "clicked "+ index_array[0] + ", " + index_array[1] + ", " + index_array[2] + " Buttons\n" + "are already chosen -1 point", Toast.LENGTH_SHORT).show();
                                                     score2--;
                                                     score2_view.setText(String.format(" %d", score2));
                                                 }
@@ -1052,7 +1053,7 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                             }
                             else{
                                 //incorrect
-                                Toast.makeText(this, "clicked "+ index_array[0] + ", " + index_array[1] + ", " + index_array[2] + " Button\n"+ "are NOT matched!! -1 point", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, "clicked "+ index_array[0] + ", " + index_array[1] + ", " + index_array[2] + " Buttons\n"+ "are NOT MATCH!! -1 point", Toast.LENGTH_SHORT).show();
                                 score2--;
                                 score2_view.setText(String.format(" %d",score2));
                             }
@@ -1087,7 +1088,7 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                 matchflag = 0;
                 click_count = 0;
                 if (finishcount == 0) {
-                    Toast.makeText(this, "Miss. +3 points", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "I got Miss. +3 points", Toast.LENGTH_SHORT).show();
                     for(int i =0; i<9; i++){
                         button_block[i].b_button.setEnabled(false);
                         button_block[i].b_button.setTag(i);
@@ -1099,7 +1100,7 @@ public class Multi_room extends AppCompatActivity implements View.OnClickListene
                     score2_view.setText(String.format(" %d", score2));
 
                 } else {
-                    Toast.makeText(this, "not miss yet -1 point", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "NOT Miss yet -1 point", Toast.LENGTH_SHORT).show();
                     for(int i =0; i<9; i++){
                         button_block[i].b_button.setEnabled(false);
                         button_block[i].b_button.setTag(i);

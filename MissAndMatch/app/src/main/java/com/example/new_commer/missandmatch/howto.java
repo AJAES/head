@@ -17,16 +17,16 @@ import android.widget.RelativeLayout;
 
 public class howto extends AppCompatActivity implements View.OnClickListener{
 
-    ImageButton back_button;
-    ImageButton next_button;
+    private ImageButton back_button;
+    private  ImageButton next_button;
 
     Drawable drawable;
     RelativeLayout main;
     Resources res;//resource handle
 
-    int change = 0;
-    int ver=1;
-    int vibe=0;
+    private int change = 0;
+    private int ver=1;
+    private int vibe=0;
 
     Vibrator vibrator;
 

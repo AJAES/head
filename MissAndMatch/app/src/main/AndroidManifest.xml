@@ -22,12 +22,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Ghmain"
-            android:label="@string/title_activity_ghmain" />
-        <activity
             android:name=".Multi_room"
-            android:theme="@style/Theme.AppCompat.NoActionBar"
-            android:label="@string/title_activity_multiplay" />
+            android:label="@string/title_activity_multiplay"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".creater"
             android:label="@string/title_creater" />
@@ -43,13 +40,12 @@
         <activity
             android:name=".howto"
             android:label="@string/title_activity_htp" />
-
         <activity
             android:name=".DeviceListActivity"
+            android:configChanges="orientation|keyboardHidden"
             android:label="@string/title_device_list"
-            android:theme="@android:style/Theme.Dialog"
-            android:configChanges="orientation|keyboardHidden" />
-
+            android:theme="@android:style/Theme.Dialog" />
+        <activity android:name=".SingleMain"></activity>
     </application>
 
 </manifest>

@@ -26,28 +26,28 @@ public class Singleplay extends AppCompatActivity implements View.OnClickListene
     private int temp_index = 0;
     private int finishcount = 0;
     private int finish_check_count = 0;
-    int position = 0;
-    int round = 1;
-    int value = 300;
-    int save_value=value;
-    int total_time=0;
-    int record_sig=0;
-    int matchflag = 0;
-    int ver=1;
-    int vibe=0;
-    int hintcount=1;
-    Vibrator vibrator;
+    private int position = 0;
+    private int round = 1;
+    private int value = 300;
+    private int save_value=value;
+    private int total_time=0;
+    private int record_sig=0;
+    private int matchflag = 0;
+    private int ver=1;
+    private int vibe=0;
+    private int hintcount=1;
+    private Vibrator vibrator;
 
-    ImageButton back_button;
-    ImageButton miss_button;
-    ImageButton match_button;
-    ImageButton hint_button;
-    TextView t_view;
+    private ImageButton back_button;
+    private ImageButton miss_button;
+    private ImageButton match_button;
+    private ImageButton hint_button;
+    private TextView t_view;
 
-    stage i_stage = new stage();
+    stage2 i_stage = new stage2();
 
-    public stage_block[] button_block = new stage_block[9];
-    public TextView s_view;
+    private stage_block[] button_block = new stage_block[9];
+    private TextView s_view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,7 +127,7 @@ public class Singleplay extends AppCompatActivity implements View.OnClickListene
             @Override
             public void onClick(View v){
                 vibrator.vibrate(vibe*100);
-                total_time = (save_value-value);
+                total_time+= (save_value-value);
                 record_sig=1;
                 Intent intent = new Intent(Singleplay.this,record.class);
                 intent.putExtra("TIME",total_time);
@@ -210,12 +210,12 @@ public class Singleplay extends AppCompatActivity implements View.OnClickListene
         if(newButton == hint_button)
         {
             if(hintcount!=0) {
-                Toast.makeText(this, "remain number of \"MATCH\" " + finishcount, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Remainder of \"MATCH\" " + finishcount, Toast.LENGTH_SHORT).show();
                 hintcount=0;
             }
             else
             {
-                Toast.makeText(this, "you already show hint", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "You already used hint", Toast.LENGTH_SHORT).show();
             }
         }
         if(newButton == match_button){

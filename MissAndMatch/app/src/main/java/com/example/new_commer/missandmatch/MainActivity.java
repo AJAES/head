@@ -14,12 +14,12 @@ import android.widget.RelativeLayout;
 
 public class MainActivity extends AppCompatActivity {
 
-   ImageButton singleplay_button;
-    ImageButton multieplay_button;
-    ImageButton HTP_button;
-    ImageButton creater_button;
-    ImageButton option_button;
-    ImageView title;
+    private ImageButton singleplay_button;
+    private ImageButton multiplay_button;
+    private ImageButton HTP_button;
+    private ImageButton creater_button;
+    private ImageButton option_button;
+    private ImageView title;
 
     int ver=1;
     int vibe=0;
@@ -42,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
 
         singleplay_button = (ImageButton)findViewById(R.id.b_single);
         singleplay_button.setBackgroundColor(00000000);
-        multieplay_button = (ImageButton)findViewById(R.id.b_multi);
-        multieplay_button.setBackgroundColor(00000000);
+        multiplay_button = (ImageButton)findViewById(R.id.b_multi);
+        multiplay_button.setBackgroundColor(00000000);
         HTP_button = (ImageButton)findViewById(R.id.b_htp);
         HTP_button.setBackgroundColor(00000000);
         creater_button = (ImageButton)findViewById(R.id.b_made);
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
        title.setImageResource(R.drawable.title);
         singleplay_button.setImageResource(R.drawable.b1_single);
-        multieplay_button.setImageResource(R.drawable.b1_multi);
+        multiplay_button.setImageResource(R.drawable.b1_multi);
         HTP_button.setImageResource(R.drawable.b1_howto);
         creater_button.setImageResource(R.drawable.b1_madeby);
         option_button.setImageResource(R.drawable.b1_option);
@@ -66,14 +66,14 @@ public class MainActivity extends AppCompatActivity {
         singleplay_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent ghmain_intent = new Intent(MainActivity.this, Ghmain.class);
+                Intent ghmain_intent = new Intent(MainActivity.this, SingleMain.class);
                 ghmain_intent.putExtra("VER",ver);
                 ghmain_intent.putExtra("VIBE",vibe);
                 vibrator.vibrate(vibe*100);
                 startActivity(ghmain_intent);
             }
         });
-        multieplay_button.setOnClickListener(new View.OnClickListener() {
+        multiplay_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent multi_intent = new Intent(MainActivity.this, Multi_room.class);
@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
             case 1: {
                 title.setImageResource(R.drawable.title);
                 singleplay_button.setImageResource(R.drawable.b1_single);
-                multieplay_button.setImageResource(R.drawable.b1_multi);
+                multiplay_button.setImageResource(R.drawable.b1_multi);
                 HTP_button.setImageResource(R.drawable.b1_howto);
                 creater_button.setImageResource(R.drawable.b1_madeby);
                 option_button.setImageResource(R.drawable.b1_option);
@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
             case 2: {
                 title.setImageResource(R.drawable.b2_invisi);
                 singleplay_button.setImageResource(R.drawable.b2_single);
-                multieplay_button.setImageResource(R.drawable.b2_multi);
+                multiplay_button.setImageResource(R.drawable.b2_multi);
                 HTP_button.setImageResource(R.drawable.b2_howto);
                 creater_button.setImageResource(R.drawable.b2_madeby);
                 option_button.setImageResource(R.drawable.b2_option);
